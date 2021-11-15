@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.810.12
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "library_management_NaverAPI", "library_management_NaverAPI\library_management_NaverAPI.csproj", "{3136B836-8A75-4472-B86E-FE331123B7CD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3136B836-8A75-4472-B86E-FE331123B7CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3136B836-8A75-4472-B86E-FE331123B7CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3136B836-8A75-4472-B86E-FE331123B7CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3136B836-8A75-4472-B86E-FE331123B7CD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {13BBE3D6-FCA4-4583-B80B-C33A7C8F6BF8}
+	EndGlobalSection
+EndGlobal

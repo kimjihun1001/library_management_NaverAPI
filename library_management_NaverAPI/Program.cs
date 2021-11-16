@@ -6,8 +6,8 @@ class Program
     static void Main(string[] args)
     {
         NaverAPI naverAPI = new NaverAPI();
-        naverAPI.NaverSearchBook();
+        string input = Console.ReadLine();
+        Console.WriteLine($">>{input}<<");
+        naverAPI.NaverSearchBook(input);
     }
 }
-//test
-//test

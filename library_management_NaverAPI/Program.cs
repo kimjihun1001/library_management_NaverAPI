@@ -1,12 +1,11 @@
 ﻿using System;
+using MySql.Data.MySqlClient;
 
-namespace library_management_NaverAPI
+class Program
 {
-    class Program
+    static void Main(string[] args)
     {
-        static void Main(string[] args)
-        {
-            Console.WriteLine("Hello World!");
-        }
+        NaverAPI naverAPI = new NaverAPI();
+        naverAPI.NaverSearchBook();
     }
 }

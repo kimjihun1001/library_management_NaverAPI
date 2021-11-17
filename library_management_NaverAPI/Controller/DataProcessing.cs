@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using MySql.Data.MySqlClient;
 
+
 [Serializable]
 public class DataProcessing : FileManagement
 {
@@ -186,9 +187,9 @@ public class DataProcessing : FileManagement
     }
 
     // 신규 책 등록
-    public void AddNewBook(string id, string name, string publisher, string author, string price, int quantity)
+    public void AddNewBook(string id, string isbn, string name, string publisher, string author, int price, int quantity)
     {
-        Book book= new Book(id, name, publisher, author, price, quantity);
+        Book book= new Book(id, isbn, name, publisher, author, price, quantity);
         bookList.Add(book);
         UpdateBookFile(bookList);
     }
@@ -290,5 +291,4 @@ public class DataProcessing : FileManagement
         return true;
     }
 
-    
 }

@@ -20,7 +20,7 @@ class Program
         FileManagement.bookHistoryList = file.LoadBookHistoryFile(FileManagement.bookHistoryList);
 
         ui.View_3_9();
-        ui.View_Main();
+        //ui.View_Main();
 
     }
     

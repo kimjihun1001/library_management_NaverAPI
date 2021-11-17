@@ -10,6 +10,7 @@ public class User : DataProcessing
     private int age;   // 나이
     private string phoneNumber;  // 전화번호
     private string adress;   // 주소
+    private int point;
     public List<Book> borrowedBook = new List<Book>();    // 대출한 책
     //private int number;     // 검색 리스트용 넘버
 

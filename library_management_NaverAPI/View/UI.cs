@@ -849,7 +849,8 @@ public class UI : DataProcessing
                 break;
         }
 
-        AddNewBook(id, name, publisher, author, price, quantity);
+        string isbn = "1";
+        AddNewBook(id, isbn, name, publisher, author, int.Parse(price), quantity);
         Console.WriteLine("신규 책 등록이 완료되었습니다.");
         Console.WriteLine("이전 화면으로 돌아가려면 ESC를 눌러주세요.");
         string input = ReadESC();
@@ -901,7 +902,7 @@ public class UI : DataProcessing
                         case "1":
                             Console.WriteLine("변경할 가격을 입력해주세요. ");
                             string price = ReadNumber();
-                            currentBook.Price = price;
+                            currentBook.Price = int.Parse(price);
                             foreach (Book book in bookList)
                             {
                                 if (book.Id == id)

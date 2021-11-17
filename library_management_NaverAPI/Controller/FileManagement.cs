@@ -52,35 +52,6 @@ public class FileManagement : Exception
         serializer.Serialize(ws, bookList);     //직렬화(저장)
         ws.Close();
     }
-    // Book
-    // file 초기화: .dat file을 직접 만들어야 해서, 한 번 사용하고 주석 처리할 예정.
-    // 메소드: 객체 생성 -> 리스트 생성 -> dat file 생성
-    public void initializeBookFile()
-    {
-        // 객체 생성
-        Book firstBook = new Book("ID001","메타버스","더큰내일센터","김종현","8000",10);
-        Book secondBook = new Book("ID002", "다함께 아자!", "더큰내일센터", "김종현", "9000", 10);
-        Book thirdBook = new Book("ID003", "야근조아", "더큰내일센터", "백승민", "9000", 10);
-        Book fourthBook = new Book("ID004", "닭가슴살조아", "린랩", "백승민", "10000", 10);
-        Book fifthBook = new Book("ID005", "주식과 코인", "린랩", "이충훈", "12000", 10);
-        Book sixthBook = new Book("ID006", "인싸의 삶", "린랩", "김지훈", "12000", 10);
-        Book seventhBook = new Book("ID007", "스터디조아", "린랩", "김창연", "13000", 10);
-        Book eightthBook = new Book("ID008", "벤처마루 탈출기", "벤처마루", "김진양", "15000", 10);
-
-        // 리스트 생성
-        bookList.Add(firstBook);
-        bookList.Add(secondBook);
-        bookList.Add(thirdBook);
-        bookList.Add(fourthBook);
-        bookList.Add(fifthBook);
-        bookList.Add(sixthBook);
-        bookList.Add(seventhBook);
-        bookList.Add(eightthBook);
-
-        // dat file 생성
-        UpdateBookFile(bookList);
-    }
-
 
     // User
     // file 읽기 

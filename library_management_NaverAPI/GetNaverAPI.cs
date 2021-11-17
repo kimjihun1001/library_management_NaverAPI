@@ -78,6 +78,11 @@ class NaverAPI
                 foreach (XmlNode xmlNode in xmlNodeList)
                 {
                     Console.WriteLine(xmlNode.SelectSingleNode("title").InnerText);
+                    Console.WriteLine(xmlNode.SelectSingleNode("author").InnerText);
+                    Console.WriteLine(xmlNode.SelectSingleNode("price").InnerText);
+                    Console.WriteLine(xmlNode.SelectSingleNode("discount").InnerText);
+                    Console.WriteLine(xmlNode.SelectSingleNode("publisher").InnerText);
+                    Console.WriteLine(xmlNode.SelectSingleNode("isbn").InnerText);
                     Console.WriteLine();
                     //if (xmlNode.SelectSingleNode("discount").InnerText == "")   // 왠지 모르지만 null로 하면 안되길래 ""로 함.
                     //{

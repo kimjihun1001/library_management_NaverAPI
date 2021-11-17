@@ -63,34 +63,38 @@ class NaverAPI
             XmlNodeList xmlNodeList = secondNode.SelectNodes("item");
             // 검색 결과의 갯수
             XmlNode SearchResultCountNode = secondNode.SelectSingleNode("total");
+            XmlNode SearchResultDisplayCountNode = secondNode.SelectSingleNode("display");
 
             if (SearchResultCountNode.InnerText == "0")
             {
-                IsThereResult = false;
                 Console.WriteLine("검색 결과가 없습니다.");
+            }
+            else if (SearchResultDisplayCountNode.InnerText == "0")
+            {
+                Console.WriteLine("더 이상 페이지가 없습니다.");
             }
             else
             {
                 foreach (XmlNode xmlNode in xmlNodeList)
                 {
                     Console.WriteLine(xmlNode.SelectSingleNode("title").InnerText);
+                    Console.WriteLine();
                     //if (xmlNode.SelectSingleNode("discount").InnerText == "")   // 왠지 모르지만 null로 하면 안되길래 ""로 함.
                     //{
                     //    Console.WriteLine(xmlNode.SelectSingleNode("title").InnerText); // 책 제목
                     //    Console.WriteLine("할인 가격 없음");
                     //}
                 }
-
             }
 
-            if (Console.ReadKey().Key == ConsoleKey.RightArrow)
+            ConsoleKeyInfo key = Console.ReadKey();
+
+            if (key.Key == ConsoleKey.RightArrow)
             {
-                if (IsThereResult == true)
+                if (SearchResultDisplayCountNode.InnerText != "0")
                     page += int.Parse(displayNumber);
-                else
-                    Console.WriteLine("더 이상 페이지가 없습니다.");
             }
-            else if (Console.ReadKey().Key == ConsoleKey.LeftArrow)
+            else if (key.Key == ConsoleKey.LeftArrow)
             {
                 if (page != 1)
                     page -= int.Parse(displayNumber);

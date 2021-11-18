@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 
-[Serializable]
 public class User : DataProcessing
 {
     private string id;  // 회원번호
@@ -51,6 +50,11 @@ public class User : DataProcessing
     }
 
     public int Number
+    {
+        get; set;
+    }
+
+    public int Point
     {
         get; set;
     }

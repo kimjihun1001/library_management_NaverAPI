@@ -7,19 +7,24 @@ class Program
 {
     static void Main(string[] args)
     {
-        FileManagement file = new FileManagement();
-        UI ui = new UI();
+        //UI ui = new UI();
 
-        // 처음 bookInformation.dat 파일 만들때 사용
-        //file.initializeBookFile();
 
-        // bookList는 static 변수이므로 클래스 이름 사용
-        // LoadBookFile은 static이 아닌 메소드이므로 객체 이름 사용
-        FileManagement.bookList = file.LoadBookFile(FileManagement.bookList);
-        FileManagement.userList = file.LoadUserFile(FileManagement.userList);
-        FileManagement.bookHistoryList = file.LoadBookHistoryFile(FileManagement.bookHistoryList);
+        TreatDB_MySQL treatDB_MySQL = new TreatDB_MySQL();
 
-        ui.View_3_9();
+        treatDB_MySQL.LoadBookDB();
+
+        Book book1 = new Book("008", "0123456789123", "신나는 코딩", "제주엔샵", "김지훈", 10000, 10);
+        TreatDB_MySQL.bookList.Add(book1);
+
+        foreach (Book book in TreatDB_MySQL.bookList)
+        {
+            Console.WriteLine(book.Name);
+        }
+
+        treatDB_MySQL.UploadBookDB();
+
+        //ui.View_3_9();
         //ui.View_Main();
 
     }

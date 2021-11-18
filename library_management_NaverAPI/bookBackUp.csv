@@ -1,0 +1,7 @@
+[{"id":"001", "isbn":"9788959897001", "name":"\ud2b8\ub80c\ub4dc \ucf54\ub9ac\uc544 2022", "author":"\uae40\ub09c\ub3c4|\uc774\uc900\uc601|\uc774\ud5a5\uc740", "publisher":"\ubbf8\ub798\uc758\ucc3d", "price":18000, "quantity":10, "currentQuantity":10},
+ {"id":"002", "isbn":"9791166570421", "name":"\uc8fc\uc2dd\ud22c\uc790 \uc808\ub300\uc6d0\uce59", "author":"\ubc15\uc601\uc625", "publisher":"\uc13c\uc2dc\uc624", "price":17000, "quantity":10, "currentQuantity":10},
+ {"id":"003", "isbn":"9791165216603", "name":"NFT \ub808\ubcfc\ub8e8\uc158", "author":"\uc131\uc18c\ub77c", "publisher":"\ub354\ud018\uc2a4\ud2b8", "price":18000, "quantity":10, "currentQuantity":10},
+ {"id":"004", "isbn":"9791190977432", "name":"\uac70\uc778\uc758 \ud3ec\ud2b8\ud3f4\ub9ac\uc624", "author":"\uac15\ud658\uad6d", "publisher":"\ud398\uc774\uc9c02(page2)", "price":18000, "quantity":10, "currentQuantity":10},
+ {"id":"005", "isbn":"9791191211467", "name":"\uadf8\ub0e5 \ud558\uc9c0 \ub9d0\ub77c", "author":"\uc1a1\uae38\uc601", "publisher":"\ubd81\uc2a4\ud1a4", "price":17000, "quantity":10, "currentQuantity":10},
+ {"id":"006", "isbn":"9791130677774", "name":"\uc6f0\uc53d\ud0b9", "author":"\ucf08\ub9ac \ucd5c", "publisher":"\ub2e4\uc0b0\ubd81\uc2a4", "price":16000, "quantity":10, "currentQuantity":10},
+ {"id":"007", "isbn":"9791189580575", "name":"\uba54\ud0c0\ubc84\uc2a4", "author":"\uae40\uc0c1\uade0", "publisher":"\ud50c\ub79c\ube44\ub514\uc790\uc778", "price":17000, "quantity":10, "currentQuantity":10}]

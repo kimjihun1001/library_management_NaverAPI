@@ -1,6 +1,5 @@
 ﻿using System;
 
-[Serializable]
 public class Book : DataProcessing
 {
     private string id;  // Primary Key

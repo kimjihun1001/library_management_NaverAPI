@@ -1,7 +1,7 @@
 ﻿using System;
 
 [Serializable]
-public class Exception : MenuControl
+public class Exception
 {
     public Exception()
     {

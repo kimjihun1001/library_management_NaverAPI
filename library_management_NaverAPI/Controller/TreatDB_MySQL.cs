@@ -50,11 +50,13 @@ public class TreatDB_MySQL
         MySqlConnection connection = new MySqlConnection("Server=localhost;Database=library;Uid=root;Pwd=36671726;");
         connection.Open();
 
+        // 빈 테이블로 초기화 
         MySqlCommand deleteCommand = new MySqlCommand("DELETE FROM book where id != 0", connection);
         // 위의 command를 실행한다
         // INSERT와 DELETE 할 때만 사용하기. SELECT할 때 사용하면 튕김 
         deleteCommand.ExecuteNonQuery();
 
+        // 리스트에 있는 도서 객체 MySQL DB로 보내기 
         foreach (Book book in bookList)
         {
             string bookInformationString = "VALUES('" + book.Id + "', '" + book.Isbn + "', '" + book.Name + "', '" + book.Author + "', '" + book.Publisher + "', " + book.Price + ", " + book.Quantity + ", " + book.CurrentQuantity + ")";
@@ -63,27 +65,6 @@ public class TreatDB_MySQL
 
             command.ExecuteNonQuery();
         }
-        connection.Close();
-    }
-
-    public void UploadTestDB()
-    {
-        MySqlConnection connection = new MySqlConnection("Server=localhost;Database=library;Uid=root;Pwd=36671726;");
-        connection.Open();
-
-        MySqlCommand deleteCommand = new MySqlCommand("DELETE FROM new_table where id != 0", connection);
-        // 위의 command를 실행한다
-        // INSERT와 DELETE 할 때만 사용하기. SELECT할 때 사용하면 튕김 
-        deleteCommand.ExecuteNonQuery();
-
-        //foreach (Book book in bookList)
-        //{
-        //    string bookInformationString = "VALUES('" + book.Id + "', '" + book.Isbn + "', '" + book.Name + "', '" + book.Author + "', '" + book.Publisher + "', " + book.Price + ", " + book.Quantity + ", " + book.CurrentQuantity + ")";
-
-        //    MySqlCommand command = new MySqlCommand("INSERT INTO book (id, isbn, name, author, publisher, price, quantity, currentQuantity)" + bookInformationString, connection);
-
-        //    command.ExecuteNonQuery();
-        //}
         connection.Close();
     }
 
@@ -116,4 +97,27 @@ public class TreatDB_MySQL
         rdr.Close();
         connection.Close();
     }
+
+    public void UploadUserDB()
+    {
+        MySqlConnection connection = new MySqlConnection("Server=localhost;Database=library;Uid=root;Pwd=36671726;");
+        connection.Open();
+
+        // 빈 테이블로 초기화 
+        MySqlCommand deleteCommand = new MySqlCommand("DELETE FROM user where id != 0", connection);
+        deleteCommand.ExecuteNonQuery();
+
+        // 리스트에 있는 회원 객체 MySQL DB로 보내기 
+        foreach (User user in userList)
+        {
+            string userInformationString = "VALUES('" + user.Id + "', '" + user.Password + "', '" + user.Name + "', " + user.Age + ", '" + user.PhoneNumber + "', '" + user.Address + "', " + user.Point + ")";
+
+            MySqlCommand command = new MySqlCommand("INSERT INTO user (id, password, name, age, phoneNumber, address, point)" + userInformationString, connection);
+
+            command.ExecuteNonQuery();
+        }
+        connection.Close();
+    }
+
+
 }

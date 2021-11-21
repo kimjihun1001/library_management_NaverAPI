@@ -19,7 +19,8 @@ public class UI : DataProcessing
             Console.WriteLine($"책 출판사: {book.Publisher}");
             Console.WriteLine($"책 저자: {book.Author}");
             Console.WriteLine($"책 가격: {book.Price}");
-            Console.WriteLine($"책 수량: {book.Quantity}");
+            Console.WriteLine($"책 총 수량: {book.Quantity}");
+            Console.WriteLine($"책 현재 수량: {book.CurrentQuantity}");
             Console.WriteLine("--------------------------------------------------");
         }
     }
@@ -31,6 +32,7 @@ public class UI : DataProcessing
         {
             Console.WriteLine($"ID: {user.Id}");
             Console.WriteLine($"이름: {user.Name}");
+            Console.WriteLine($"포인트: {user.Point}");
             Console.WriteLine($"나이: {user.Age}");
             Console.WriteLine($"전화 번호: {user.PhoneNumber}");
             Console.WriteLine($"주소: {user.Address}");
@@ -69,7 +71,7 @@ public class UI : DataProcessing
         {
             // 회원 로그아웃시켜야 함.
             currentUser = new User();
-
+            
             View_Title();
             Console.WriteLine("1. 로그인");
             Console.WriteLine("2. 회원가입");
@@ -129,6 +131,8 @@ public class UI : DataProcessing
             else
                 Console.Write("잘못 입력하셨습니다. 다시 입력하세요.");
         }
+
+        HistoryOfLogin();
 
         while (true)
         {
@@ -217,10 +221,11 @@ public class UI : DataProcessing
     // 책 이름으로 검색
     public void View_1_1_1()
     {
-        View_Title();
-        Console.WriteLine("검색하실 책 이름을 입력하세요: ");
         while (true)
         {
+            View_Title();
+            Console.WriteLine("검색하실 책 이름을 입력하세요: ");
+
             // 검색 리스트 초기화 
             searchedBookList = new List<Book>();
 
@@ -248,10 +253,11 @@ public class UI : DataProcessing
     // 책 저자명으로 검색
     public void View_1_1_2()
     {
-        View_Title();
-        Console.WriteLine("검색하실 책 저자명을 입력하세요: ");
         while (true)
         {
+            View_Title();
+            Console.WriteLine("검색하실 책 저자명을 입력하세요: ");
+
             // 검색 리스트 초기화 
             searchedBookList = new List<Book>();
 
@@ -279,10 +285,11 @@ public class UI : DataProcessing
     // 책 출판사로 검색
     public void View_1_1_3()
     {
-        View_Title();
-        Console.WriteLine("검색하실 책 출판사를 입력하세요: ");
         while (true)
         {
+            View_Title();
+            Console.WriteLine("검색하실 책 출판사를 입력하세요: ");
+
             // 검색 리스트 초기화 
             searchedBookList = new List<Book>();
 
@@ -312,10 +319,11 @@ public class UI : DataProcessing
     // 책 대출 
     public void View_1_2()
     {
-        View_Title();
-        Console.WriteLine("검색하실 책 이름을 입력하세요: ");
         while (true)
         {
+            View_Title();
+            Console.WriteLine("검색하실 책 이름을 입력하세요: ");
+
             // 검색 리스트 초기화 
             searchedBookList = new List<Book>();
 
@@ -462,7 +470,7 @@ public class UI : DataProcessing
                         if (user.Id == currentUser.Id)
                         {
                             user.PhoneNumber = currentUser.PhoneNumber;
-                            UpdateUserFile(userList);
+                            UploadUserDB();
                             Console.WriteLine("전화번호를 변경했습니다.");
                         }
                     }
@@ -487,7 +495,7 @@ public class UI : DataProcessing
                         if (user.Id == currentUser.Id)
                         {
                             user.Address = currentUser.Address;
-                            UpdateUserFile(userList);
+                            UploadUserDB();
                             Console.WriteLine("주소를 변경했습니다.");
                         }
                     }
@@ -610,10 +618,10 @@ public class UI : DataProcessing
     // 관리자 모드
     public void View_AdminMode()
     {
-        View_Title();
-        Console.WriteLine("관리자 비밀번호를 입력하세요: ");
         while (true)
         {
+            View_Title();
+            Console.WriteLine("관리자 비밀번호를 입력하세요: ");
             string input1 = ReadString();
             if (input1 == "\0")
                 break;
@@ -627,10 +635,10 @@ public class UI : DataProcessing
                     Console.WriteLine("2. 회원 검색");
                     Console.WriteLine("3. 회원 삭제");
                     Console.WriteLine("4. 책 리스트");
-                    Console.WriteLine("5. 신규 책 등록");
+                    Console.WriteLine("5. 네이버로 검색하여 신규 책 등록");
                     Console.WriteLine("6. 책 정보 수정");
                     Console.WriteLine("7. 책 삭제");
-                    Console.WriteLine("8. 책 대출/반납 기록");
+                    Console.WriteLine("8. 로그 기록");
                     Console.WriteLine("9. 돌아가기");
 
                     string input = ReadNumber();
@@ -696,11 +704,11 @@ public class UI : DataProcessing
     // 회원 검색
     public void View_3_2()
     {
-        View_Title();
-        Console.WriteLine("검색하실 회원 이름을 입력하세요 (한글): ");
-
         while (true)
         {
+            View_Title();
+            Console.WriteLine("검색하실 회원 이름을 입력하세요 (한글): ");
+
             // 검색 리스트 초기화 
             searchedUserList = new List<User>();
 
@@ -756,111 +764,53 @@ public class UI : DataProcessing
     // 신규 책 등록
     public void View_3_5()
     {
-        View_Title();
-
-        string id;
-        string name;
-        string publisher;
-        string author;
-        string price;
-        int quantity;
-
-        Console.Write("ID로 사용할 세 자리 숫자를 입력하세요. (숫자)");
         while (true)
         {
-            string idNumber = ReadNumber();
-            if (idNumber == "\0")
-                goto Jump;
+            View_Title();
 
-            id = "ID" + idNumber;
-            if (idNumber.Length > 3)
-                Console.Write("세 자리 숫자로 입력하세요.");
-            else if (CheckBookID(id))
-                Console.Write("이미 존재하는 ID입니다. 다시 입력하세요: ");
-            else
-                break;
+            Console.Write("네이버로 구매하고 싶은 책을 검색하세요. 제목으로 검색하려면 1번, 저자로 검색하려면 2번을 눌러주세요.");
+
+            string input = ReadNumber();
+            if (input == "\0")
+                View_AdminMode();
+
+            switch (input)
+            {
+                case "1":
+                    Console.Write("검색 결과를 몇 개씩 보시겠습니까?");
+                    string input1 = ReadNumber();
+                    if (input1 == "\0")
+                        View_AdminMode();
+
+                    Console.Write("검색어를 입력하세요.");
+                    string input2 = ReadString();
+                    if (input1 == "\0")
+                        View_AdminMode();
+
+                    NaverSearchBook("title", input2, input1);
+                    break;
+                case "2":
+                    Console.Write("검색 결과를 몇 개씩 보시겠습니까?");
+                    input1 = ReadNumber();
+                    if (input1 == "\0")
+                        View_AdminMode();
+
+                    Console.Write("검색어를 입력하세요.");
+                    input2 = ReadString();
+                    if (input1 == "\0")
+                        View_AdminMode();
+
+                    NaverSearchBook("author", input2, input1);
+                    break;
+                default:
+                    break;
+            }
         }
 
-        Console.Write("책 이름을 입력하세요. (숫자/한글/영어)");
-        while (true)
-        {
-            name = ReadString();
-            if (name == "\0")
-                goto Jump;
-
-            if (CheckEmpty(name))
-                Console.WriteLine("책 이름은 공백일 수 없습니다. 다시 입력하세요: ");
-            else
-                break;
-        }
-
-        Console.Write("출판사를 입력하세요. (숫자/한글/영어)");
-        while (true)
-        {
-            publisher = ReadString();
-            if (publisher == "\0")
-                goto Jump;
-
-            if (CheckEmpty(publisher))
-                Console.WriteLine("책 출판사 이름은 공백일 수 없습니다. 다시 입력하세요: ");
-            else
-                break;
-        }
-
-        Console.Write("책 저자를 입력하세요. (한글)");
-        while (true)
-        {
-            author = ReadKorean();
-            if (author == "\0")
-                goto Jump;
-
-            if (name.Length > 5)
-                Console.Write("이름이 너무 깁니다. 4자리 이하로 다시 입력하세요: ");
-            else if (CheckEmpty(author))
-                Console.WriteLine("책 저자 이름은 공백일 수 없습니다. 다시 입력하세요: ");
-            else if (CheckBookNameAndAuthor(name, publisher, author))
-                Console.Write("동일 저자, 동일 제목, 동일 출판사의 책이 등록되어 있습니다. 다시 입력하세요: ");
-            else
-                break;
-        }
-
-        Console.Write("가격을 입력하세요. (숫자)");
-        while (true)
-        {
-            price = ReadNumber();
-            if (price == "\0")
-                goto Jump;
-
-            if (price.Length > 6)
-                Console.Write("책의 가격이 너무 높습니다. 6자리 이하로 다시 입력하세요: ");
-            else
-                break;
-        }
-
-        Console.Write("수량을 입력하세요. (숫자)");
-        while (true)
-        {
-            string quantityString = ReadNumber();
-            if (quantityString == "\0")
-                goto Jump;
-            quantity = int.Parse(quantityString);
-
-            if (quantity > 100)
-                Console.Write("책의 수량이 너무 많습니다. 100권 이하로 다시 입력하세요: ");
-            else
-                break;
-        }
-
-        string isbn = "1";
-        AddNewBook(id, isbn, name, publisher, author, int.Parse(price), quantity);
-        Console.WriteLine("신규 책 등록이 완료되었습니다.");
         Console.WriteLine("이전 화면으로 돌아가려면 ESC를 눌러주세요.");
-        string input = ReadESC();
-        if (input == "\0")
+        string input3 = ReadESC();
+        if (input3 == "\0")
             View_AdminMode();
-
-        Jump:
-        Console.WriteLine();
 
     }
 
@@ -910,7 +860,7 @@ public class UI : DataProcessing
                                 if (book.Id == id)
                                 {
                                     book.Price = currentBook.Price;
-                                    UpdateBookFile(bookList);
+                                    UploadBookDB();
                                     Console.WriteLine("가격을 변경했습니다.");
                                 }
                             }
@@ -925,7 +875,7 @@ public class UI : DataProcessing
                                 if (book.Quantity == quantity)
                                 {
                                     book.Quantity = currentBook.Quantity;
-                                    UpdateBookFile(bookList);
+                                    UploadBookDB();
                                     Console.WriteLine("수량을 변경했습니다.");
                                 }
                             }
@@ -972,43 +922,106 @@ public class UI : DataProcessing
         }
     }
 
-    // 책 대출, 반납 기록
+    // 로그 기록 보기
     public void View_3_8()
     {
         while (true)
         {
             View_Title();
-            foreach (BookHistory bookHistory in bookHistoryList)
+            foreach (Log log in logList)
             {
-                if (bookHistory.BorrowTime != null)
+                string typeOfLog = log.Type;
+                switch (typeOfLog)
                 {
-                    Console.WriteLine($"{bookHistory.BorrowTime}: \"{bookHistory.UserName}\"님이 <{bookHistory.BookName}> 도서를 대출하셨습니다.");
-                }
-                else
-                {
-                    Console.WriteLine($"{bookHistory.ReturnTime}: \"{bookHistory.UserName}\"님이 <{bookHistory.BookName}> 도서를 반납하셨습니다.");
+                    case "로그인":
+                        Console.WriteLine($"{log.Time}: \"{log.UserName}\"님이 로그인했습니다.");
+                        break;
+                    case "대출":
+                        Console.WriteLine($"{log.Time}: \"{log.UserName}\"님이 <{log.BookName}>을 대출했습니다.");
+                        break;
+                    case "반납":
+                        Console.WriteLine($"{log.Time}: \"{log.UserName}\"님이 <{log.BookName}>을 반납했습니다.");
+                        break;
+                    case "구매":
+                        Console.WriteLine($"{log.Time}: \"{log.UserName}\"님이 <{log.BookName}>을 구매했습니다.");
+                        break;
+                    case "삭제":
+                        Console.WriteLine($"{log.Time}: \"{log.UserName}\"님이 <{log.BookName}>을 삭제했습니다.");
+                        break;
+                    default:
+                        break;
                 }
             }
             Console.WriteLine();
+            Console.WriteLine("로그를 타입별로 확인하려면 아래처럼 숫자를 눌러주세요.");
+            Console.WriteLine("1: 로그인");
+            Console.WriteLine("2: 대출");
+            Console.WriteLine("3: 반납");
+            Console.WriteLine("4: 구매");
+            Console.WriteLine("5: 삭제");
             Console.WriteLine("이전 화면으로 돌아가려면 ESC를 눌러주세요.");
-            string input = ReadESC();
+            string input = ReadNumber();
             if (input == "\0")
                 break;
+
+            switch (input)
+            {
+                case "1":
+                    foreach (Log log in logList)
+                    {
+                        View_Title();
+                        string typeOfLog = log.Type;
+                        if (typeOfLog == "로그인")
+                            Console.WriteLine($"{log.Time}: \"{log.UserName}\"님이 로그인했습니다.");
+                    }
+                        break;
+                case "2":
+                    foreach (Log log in logList)
+                    {
+                        View_Title();
+                        string typeOfLog = log.Type;
+                        if (typeOfLog == "대출")
+                            Console.WriteLine($"{log.Time}: \"{log.UserName}\"님이 <{log.BookName}>을 대출했습니다.");
+                    }
+                    break;
+                case "3":
+                    foreach (Log log in logList)
+                    {
+                        View_Title();
+                        string typeOfLog = log.Type;
+                        if (typeOfLog == "반납")
+                            Console.WriteLine($"{log.Time}: \"{log.UserName}\"님이 <{log.BookName}>을 반납했습니다.");
+                    }
+                    break;
+                case "4":
+                    foreach (Log log in logList)
+                    {
+                        View_Title();
+                        string typeOfLog = log.Type;
+                        if (typeOfLog == "구매")
+                            Console.WriteLine($"{log.Time}: \"{log.UserName}\"님이 <{log.BookName}>을 구매했습니다.");
+                    }
+                    break;
+                case "5":
+                    foreach (Log log in logList)
+                    {
+                        View_Title();
+                        string typeOfLog = log.Type;
+                        if (typeOfLog == "삭제")
+                            Console.WriteLine($"{log.Time}: \"{log.UserName}\"님이 <{log.BookName}>을 삭제했습니다.");
+                    }
+                    break;
+                default:
+                    Console.WriteLine("잘못 입력했습니다. 다시 입력하세요.");
+                    break;
+            }
+
+            Console.WriteLine("이전 화면으로 돌아가려면 ESC를 눌러주세요.");
+            string input1 = ReadESC();
+            if (input1 == "\0")
+                break;
+
         }
-    }
-
-    // 네이버로 책 검색
-    public void View_3_9()
-    {
-        NaverAPI naverAPI = new NaverAPI();
-        Console.WriteLine("검색어를 입력하세요.");
-        string input = Console.ReadLine();
-        Console.WriteLine($">>{input}<<");
-
-        Console.WriteLine("검색 결과를 몇 개씩 볼 지를 입력하세요.");
-        string number = Console.ReadLine();
-
-        naverAPI.NaverSearchBook("title", input, number);
     }
 
     // End

@@ -207,6 +207,7 @@ public class MenuControl
         }
     }
 
+
     public bool IsNumber(ConsoleKeyInfo key)      //입력값이 숫자인지 체크
     {
         char trying = key.KeyChar;

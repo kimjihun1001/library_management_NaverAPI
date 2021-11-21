@@ -117,7 +117,7 @@ public class TreatDB_MySQL : MenuControl
         connection.Open();
 
         // 빈 테이블로 초기화 
-        MySqlCommand deleteCommand = new MySqlCommand("DELETE FROM user where id != 0", connection);
+        MySqlCommand deleteCommand = new MySqlCommand("DELETE FROM user where id != ''", connection);
         deleteCommand.ExecuteNonQuery();
 
         // 리스트에 있는 회원 객체 MySQL DB로 보내기 
@@ -132,7 +132,7 @@ public class TreatDB_MySQL : MenuControl
 
             string userInformationString = "VALUES('" + user.Id + "', '" + user.Password + "', '" + user.Name + "', " + user.Age + ", '" + user.PhoneNumber + "', '" + user.Address + "', " + user.Point + ", '" + borrowedBook + "')";
 
-            MySqlCommand command = new MySqlCommand("INSERT INTO user (id, password, name, age, phoneNumber, address, point)" + userInformationString, connection);
+            MySqlCommand command = new MySqlCommand("INSERT INTO user (id, password, name, age, phoneNumber, address, point, borrowedBook)" + userInformationString, connection);
 
             command.ExecuteNonQuery();
         }
@@ -159,8 +159,7 @@ public class TreatDB_MySQL : MenuControl
             log.Type = rdr["type"].ToString();
             log.UserName = rdr["userName"].ToString();
             log.BookName = rdr["bookName"].ToString();
-            log.BorrowTime = rdr["borrowTime"].ToString();
-            log.ReturnTime = rdr["returnTime"].ToString();
+            log.Time = rdr["time"].ToString();
 
             logList.Add(log);
         }
@@ -180,9 +179,9 @@ public class TreatDB_MySQL : MenuControl
         // 리스트에 있는 회원 객체 MySQL DB로 보내기 
         foreach (Log log in logList)
         {
-            string logInformationString = "VALUES('" + log.Id + "', '" + log.Type + "', '" + log.UserName + "', " + log.BookName + ", '" + log.BorrowTime + "', '" + log.ReturnTime + ")";
+            string logInformationString = "VALUES(" + log.Id + ", '" + log.Type + "', '" + log.UserName + "', '" + log.BookName + "', '" + log.Time + "')";
 
-            MySqlCommand command = new MySqlCommand("INSERT INTO log (id, type, userName, bookName, borrowTime, returnTime)" + logInformationString, connection);
+            MySqlCommand command = new MySqlCommand("INSERT INTO log (id, type, userName, bookName, time)" + logInformationString, connection);
 
             command.ExecuteNonQuery();
         }

@@ -6,8 +6,7 @@ public class Log
     private string type;
     private string userName;
     private string bookName;
-    private string borrowTime = null;
-    private string returnTime = null;
+    private string time = null;
 
     public Log()
     {
@@ -46,14 +45,9 @@ public class Log
         // 대출, 반납, 검색, 구매 시에만 존재 
         get; set;
     }
-    public string BorrowTime
+    public string Time
     {
-        // 대출, 반납 시에만 존재 
-        get; set;
-    }
-    public string ReturnTime
-    {
-        // 대출, 반납 시에만 존재 
+        // 로그인, 대출, 반납 시에만 존재 
         get; set;
     }
 }

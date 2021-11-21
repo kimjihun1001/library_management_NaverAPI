@@ -1,0 +1,198 @@
+﻿using System;
+// Naver API 이용할 때 필요
+using System.Net;
+using System.Text;
+using System.IO;
+
+using System.Linq;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using System.Xml;
+using System.Text.RegularExpressions;
+
+public class NaverAPI : TreatDB_MySQL
+{
+    public void NaverSearchBook(string searchField, string searchWord, string displayNumber)
+    {
+        const string NAVER_ID = "xQKhYDcaW4DZ5JNHdmXJ";
+        const string NAVER_SECRET = "869iq_F6ep";
+        const string NAVER_URL = "https://openapi.naver.com/v1/search/book_adv.xml";
+        const string NAVER_SearchForTitle = "?d_titl=";
+        const string NAVER_SearchForAuthor = "?d_auth=";
+        const string NAVER_DISPLAY_STRING = "&display=";
+
+        string url;
+        int page = 1;
+        
+        while (true)
+        {
+            UI ui2 = new UI();
+            ui2.View_Title();
+            if (searchField == "title")
+            {
+                url = NAVER_URL + NAVER_SearchForTitle + searchWord + NAVER_DISPLAY_STRING + displayNumber + "&start=" + page.ToString();
+            }
+            else if (searchField == "author")
+            {
+                url = NAVER_URL + NAVER_SearchForAuthor + searchWord + NAVER_DISPLAY_STRING + displayNumber + "&start=" + page.ToString();
+            }
+            else
+            {
+                url = "";
+                Console.WriteLine("검색 분야를 잘못 설정했습니다.");
+            }
+
+            // 요청
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+
+            // API 접근
+            request.Headers.Add("X-Naver-Client-Id", NAVER_ID);
+            request.Headers.Add("X-Naver-Client-Secret", NAVER_SECRET);
+
+            // 응답 받기
+            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+
+            // Xml 파일 받아오기
+            Stream stream = response.GetResponseStream();
+            XmlDocument xmlDocument = new XmlDocument();
+            xmlDocument.Load(stream);
+            //Console.WriteLine(xmlDocument.InnerXml);
+
+            // Xml 파일 분해하기
+            XmlNode firstNode = xmlDocument.SelectSingleNode("rss");
+            XmlNode secondNode = firstNode.SelectSingleNode("channel");
+            XmlNodeList xmlNodeList = secondNode.SelectNodes("item");
+            // 검색 결과의 갯수
+            XmlNode SearchResultCountNode = secondNode.SelectSingleNode("total");
+            XmlNode SearchResultDisplayCountNode = secondNode.SelectSingleNode("display");
+
+            if (SearchResultCountNode.InnerText == "0")
+            {
+                Console.WriteLine("검색 결과가 없습니다.");
+                break;
+            }
+            else if (SearchResultDisplayCountNode.InnerText == "0")
+            {
+                Console.WriteLine("더 이상 페이지가 없습니다.");
+            }
+            else
+            {
+                foreach (XmlNode xmlNode in xmlNodeList)
+                {
+                    string name = xmlNode.SelectSingleNode("title").InnerText;
+                    string author = xmlNode.SelectSingleNode("author").InnerText;
+                    string price = xmlNode.SelectSingleNode("price").InnerText;
+                    string discount = xmlNode.SelectSingleNode("discount").InnerText;
+                    string publisher = xmlNode.SelectSingleNode("publisher").InnerText;
+                    string isbn = xmlNode.SelectSingleNode("isbn").InnerText;
+
+                    Console.WriteLine("제목: " + CutTag(name));
+                    Console.WriteLine("저자: " + CutTag(author));
+                    Console.WriteLine("가격: " + CutTag(price));
+                    Console.WriteLine("할인 가격: " + CutTag(discount));
+                    Console.WriteLine("출판사: " + CutTag(publisher));
+                    Console.WriteLine("ISBN: " + CutTag(isbn));
+                    Console.WriteLine("--------------------------------------------------");
+
+                }
+            }
+
+            Console.WriteLine("목록에서 구매할 책이 있으면 Enter, 뒤로 돌아가려면 ESC, 검색 목록의 다른 페이지로 이동하려면 좌우방향키를 눌러주세요.");
+
+            ConsoleKeyInfo key;
+            key = Console.ReadKey(true);
+            if (key.Key == ConsoleKey.Escape) 
+            {
+                break;
+            }
+            else if (key.Key == ConsoleKey.Enter)
+            {
+                Console.WriteLine("구매할 책의 ISBN 뒷 13자리를 입력하세요");
+                string input = ReadNumber();
+                if (input == "\0")
+                    break;
+
+                while (true)
+                {
+                    bool IsThereResult = false;
+                    bool IsThereAlready = false;
+
+                    foreach (XmlNode xmlNode in xmlNodeList)
+                    {
+                        string name = xmlNode.SelectSingleNode("title").InnerText;
+                        string author = xmlNode.SelectSingleNode("author").InnerText;
+                        string price = xmlNode.SelectSingleNode("price").InnerText;
+                        string discount = xmlNode.SelectSingleNode("discount").InnerText;
+                        string publisher = xmlNode.SelectSingleNode("publisher").InnerText;
+                        string isbn = xmlNode.SelectSingleNode("isbn").InnerText;
+
+                        if (input == isbn.Substring(isbn.Length - 14, isbn.Length - 1))
+                        {
+                            foreach (Book book in bookList)
+                            {
+                                if (book.Isbn == input)
+                                {
+                                    Console.WriteLine("이미 존재하는 책입니다.");
+                                    IsThereAlready = true;
+                                    break;
+                                }
+                            }
+
+                            if (!IsThereAlready)
+                            {
+                                Console.WriteLine("구매하실 수량을 입력하세요");
+                                string input1 = ReadNumber();
+                                if (input1 == "\0")
+                                    break;
+
+                                int id = int.Parse(bookList[bookList.Count - 1].Id) + 1;
+
+                                if (discount != "")
+                                {
+                                    price = discount;
+                                }
+
+                                // 왠지 모르지만 null로 하면 안되길래 ""로 함.
+                                Book book1 = new Book(id.ToString(), input, name, publisher, author, int.Parse(price), int.Parse(input1), int.Parse(input1));
+                                DataProcessing dataProcessing = new DataProcessing();
+                                dataProcessing.HistoryOfAdd(book1);
+                                bookList.Add(book1);
+                                UploadBookDB();
+                                Console.WriteLine("신규 책 등록이 완료되었습니다.");
+                                IsThereResult = true;
+                            }
+
+                            break;
+                        }
+                    }
+
+                    if (IsThereResult)
+                        break;
+                    else
+                        Console.WriteLine("다시 입력하세요.");
+                }
+                
+                    
+            }
+            else if (key.Key == ConsoleKey.RightArrow)
+            {
+                // display하기로 한 숫자보다 현재 display된 항목이 적을 경우, 마지막 페이지기 때문에 뒤로 넘어가지 않음
+                if (int.Parse(SearchResultDisplayCountNode.InnerText) == int.Parse(displayNumber))
+                    page += int.Parse(displayNumber);
+            }
+            else if (key.Key == ConsoleKey.LeftArrow)
+            {
+                if (page != 1)
+                    page -= int.Parse(displayNumber);
+            }
+        }
+
+
+        // 가져온 text 내부의 태그 제거 함수
+        string CutTag(string input)
+        {
+            return Regex.Replace(input, @"<(.\n)*?>", string.Empty);
+        }
+
+    }
+}

@@ -7,15 +7,15 @@ class Program
 {
     static void Main(string[] args)
     {
-        //UI ui = new UI();
+        UI ui = new UI();
 
-        TreatDB_MySQL treatDB_MySQL = new TreatDB_MySQL();
-        treatDB_MySQL.LoadBookDB();
-        treatDB_MySQL.LoadUserDB();
-        treatDB_MySQL.LoadLogDB();
+        // 프로그램 처음 시작할 때, DB를 가져오는 과정.
+        // 일부러 View_Main에 넣지 않았음. 화면 표출할 때마다 가져오면 느려질까봐
+        ui.LoadBookDB();
+        ui.LoadUserDB();
+        ui.LoadLogDB();
 
-        //ui.View_3_9();
-        //ui.View_Main();
+        ui.View_Main();
 
     }
     

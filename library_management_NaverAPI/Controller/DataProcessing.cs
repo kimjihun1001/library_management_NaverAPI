@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using MySql.Data.MySqlClient;
 
-public class DataProcessing : TreatDB_MySQL
+public class DataProcessing : NaverAPI
 {
     public static User currentUser = new User();
     public static Book currentBook = new Book();
@@ -22,6 +22,7 @@ public class DataProcessing : TreatDB_MySQL
         {
             if (book.Name.Contains(input))
             {
+                HistoryOfSearch(book);
                 searchedBookList.Add(book);
             }
         }
@@ -46,6 +47,7 @@ public class DataProcessing : TreatDB_MySQL
         {
             if (book.Publisher.Contains(input))
             {
+                HistoryOfSearch(book);
                 searchedBookList.Add(book);
             }
         }
@@ -58,6 +60,7 @@ public class DataProcessing : TreatDB_MySQL
         {
             if (book.Author.Contains(input))
             {
+                HistoryOfSearch(book);
                 searchedBookList.Add(book);
             }
         }
@@ -78,6 +81,7 @@ public class DataProcessing : TreatDB_MySQL
                 }
                 else
                 {
+                    HistoryOfRemove(book);
                     bookList.Remove(book);
                     UploadBookDB();
                     Console.WriteLine($"<{book.Name}>이 도서 리스트에서 삭제되었습니다.");
@@ -179,7 +183,7 @@ public class DataProcessing : TreatDB_MySQL
 
         log.UserName = currentUser.Name;
         log.BookName = book.Name;
-        log.BorrowTime = DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss");
+        log.Time = DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss");
         logList.Add(log);
         UploadLogDB();
     }
@@ -188,18 +192,113 @@ public class DataProcessing : TreatDB_MySQL
     public void HistoryOfReturn(Book book)
     {
         Log log = new Log("반납");
-        BookHistory bookHistory = new BookHistory(currentUser.Name, book.Name);
-        bookHistory.ReturnTime = DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss");
-        bookHistoryList.Add(bookHistory);
-        UpdateBookHistoryFile(bookHistoryList);
+        if (logList.Count == 0)
+        {
+            log.Id = 1;
+        }
+        else
+        {
+            // 로그 리스트에 저장된 마지막 항목의 id + 1 해서 id 지정 
+            log.Id = logList[logList.Count - 1].Id + 1;
+        }
+
+        log.UserName = currentUser.Name;
+        log.BookName = book.Name;
+        log.Time = DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss");
+        logList.Add(log);
+        UploadLogDB();
+    }
+
+    // 로그인 기록
+    public void HistoryOfLogin()
+    {
+        Log log = new Log("로그인");
+        if (logList.Count == 0)
+        {
+            log.Id = 1;
+        }
+        else
+        {
+            // 로그 리스트에 저장된 마지막 항목의 id + 1 해서 id 지정 
+            log.Id = logList[logList.Count - 1].Id + 1;
+        }
+
+        log.UserName = currentUser.Name;
+        log.Time = DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss");
+        logList.Add(log);
+        UploadLogDB();
+    }
+
+    // 책 검색 기록
+    public void HistoryOfSearch(Book book)
+    {
+        Log log = new Log("검색");
+        if (logList.Count == 0)
+        {
+            log.Id = 1;
+        }
+        else
+        {
+            // 로그 리스트에 저장된 마지막 항목의 id + 1 해서 id 지정 
+            log.Id = logList[logList.Count - 1].Id + 1;
+        }
+
+        log.UserName = currentUser.Name;
+        log.BookName = book.Name;
+        log.Time = DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss");
+        logList.Add(log);
+        UploadLogDB();
+    }
+
+    // 책 구매 기록
+    public void HistoryOfAdd(Book book)
+    {
+        Log log = new Log("구매");
+        if (logList.Count == 0)
+        {
+            log.Id = 1;
+        }
+        else
+        {
+            // 로그 리스트에 저장된 마지막 항목의 id + 1 해서 id 지정 
+            log.Id = logList[logList.Count - 1].Id + 1;
+        }
+
+        log.UserName = "관리자";
+        log.BookName = book.Name;
+        log.Time = DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss");
+        logList.Add(log);
+        UploadLogDB();
+    }
+
+    // 책 검색 기록
+    public void HistoryOfRemove(Book book)
+    {
+        Log log = new Log("삭제");
+        if (logList.Count == 0)
+        {
+            log.Id = 1;
+        }
+        else
+        {
+            // 로그 리스트에 저장된 마지막 항목의 id + 1 해서 id 지정 
+            log.Id = logList[logList.Count - 1].Id + 1;
+        }
+
+        log.UserName = "관리자";
+        log.BookName = book.Name;
+        log.Time = DateTime.Now.ToString("yyyy-MM-dd-HH-mm-ss");
+        logList.Add(log);
+        UploadLogDB();
     }
 
     // 신규 책 등록
-    public void AddNewBook(string id, string isbn, string name, string publisher, string author, int price, int quantity)
+    public void AddNewBook(string id, string isbn, string name, string publisher, string author, int price, int quantity, int currentQuantity)
     {
-        Book book = new Book(id, isbn, name, publisher, author, price, quantity);
+        Book book = new Book(id, isbn, name, publisher, author, price, quantity, currentQuantity);
+        HistoryOfAdd(book);
         bookList.Add(book);
-        UpdateBookFile(bookList);
+        UploadBookDB();
     }
 
     // 신규 회원 등록
@@ -207,7 +306,7 @@ public class DataProcessing : TreatDB_MySQL
     {
         User user = new User(id, password, name, age, phoneNumber, address);
         userList.Add(user);
-        UpdateUserFile(userList);
+        UploadUserDB();
     }
 
     // 로그인 확인 과정

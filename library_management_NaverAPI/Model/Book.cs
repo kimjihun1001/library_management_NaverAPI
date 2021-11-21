@@ -17,7 +17,7 @@ public class Book : DataProcessing
         // 생성자
     }
 
-    public Book(string id, string isbn, string name, string publisher, string author, int price, int quantity)
+    public Book(string id, string isbn, string name, string publisher, string author, int price, int quantity, int currentQuantity)
     {
         Id = id;
         Isbn = isbn;
@@ -26,7 +26,7 @@ public class Book : DataProcessing
         Author = author;
         Price = price;
         Quantity = quantity;
-        CurrentQuantity = quantity;
+        CurrentQuantity = currentQuantity;
     }
 
     public string Id    // get/set method

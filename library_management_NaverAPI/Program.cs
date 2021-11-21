@@ -12,6 +12,7 @@ class Program
         TreatDB_MySQL treatDB_MySQL = new TreatDB_MySQL();
         treatDB_MySQL.LoadBookDB();
         treatDB_MySQL.LoadUserDB();
+        treatDB_MySQL.LoadLogDB();
 
         //ui.View_3_9();
         //ui.View_Main();

@@ -6,8 +6,8 @@ public class DataProcessing : NaverAPI
     public static User currentUser = new User();
     public static Book currentBook = new Book();
 
-    public static List<Book> searchedBookList = new List<Book>();
-    public static List<User> searchedUserList = new List<User>();
+    public List<Book> searchedBookList = new List<Book>();
+    public List<User> searchedUserList = new List<User>();
 
     public DataProcessing()
     {

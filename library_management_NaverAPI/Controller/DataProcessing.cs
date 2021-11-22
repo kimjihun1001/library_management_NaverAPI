@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using MySql.Data.MySqlClient;
 
 public class DataProcessing : NaverAPI
 {
@@ -18,9 +17,24 @@ public class DataProcessing : NaverAPI
     // 책 이름 
     public void SearchBookForName(string input)
     {
-        if (NaverSearchAdult(input))
+        if (currentUser.Age >= 19)
         {
-            if (currentUser.Age > 19)
+            foreach (Book book in bookList)
+            {
+                if (book.Name.Contains(input))
+                {
+                    HistoryOfSearch(book);
+                    searchedBookList.Add(book);
+                }
+            }
+        }
+        else
+        {
+            if (NaverSearchAdult(input))
+            {
+                Console.WriteLine("성인 검색어입니다. 더 크고 오세요.");
+            }
+            else
             {
                 foreach (Book book in bookList)
                 {
@@ -31,13 +45,7 @@ public class DataProcessing : NaverAPI
                     }
                 }
             }
-            else
-            {
-                Console.WriteLine("성인 검색어입니다. 더 크고 오세요.");
-            }
         }
-
-        
     }
     // 검색
     // 회원 이름  

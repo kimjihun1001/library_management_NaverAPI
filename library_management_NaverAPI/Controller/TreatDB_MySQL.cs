@@ -90,21 +90,26 @@ public class TreatDB_MySQL : MenuControl
             user.Age = int.Parse(rdr["age"].ToString());
             user.PhoneNumber = rdr["phoneNumber"].ToString();
             user.Address = rdr["address"].ToString();
+            user.AppliedPoint = int.Parse(rdr["appliedPoint"].ToString());
             user.Point = int.Parse(rdr["point"].ToString());
 
-            // id 형태로 저장된 대출 목록을 회원의 borrowedBook에 저장 
-            string[] borrowedBookIdList = rdr["borrowedBook"].ToString().Split("|");
-            foreach (string borrowedBookId in borrowedBookIdList)
+            // id 형태로 저장된 대출 목록을 회원의 borrowedBook에 저장
+            // 빈칸인데 자꾸 하나 있는 걸로 떠서 if 문 걸어버림
+            if (rdr["borrowedBook"].ToString() != "")
             {
-                foreach (Book book in bookList)
+                string[] borrowedBookIdList = rdr["borrowedBook"].ToString().Split("|");
+                foreach (string borrowedBookId in borrowedBookIdList)
                 {
-                    if (book.Id == borrowedBookId)
+                    foreach (Book book in bookList)
                     {
-                        user.borrowedBook.Add(book);
+                        if (book.Id == borrowedBookId)
+                        {
+                            user.borrowedBook.Add(book);
+                        }
                     }
                 }
             }
-
+            
             userList.Add(user);
         }
         rdr.Close();
@@ -130,9 +135,9 @@ public class TreatDB_MySQL : MenuControl
                 borrowedBook = borrowedBook + book.Id + "|";
             }
 
-            string userInformationString = "VALUES('" + user.Id + "', '" + user.Password + "', '" + user.Name + "', " + user.Age + ", '" + user.PhoneNumber + "', '" + user.Address + "', " + user.Point + ", '" + borrowedBook + "')";
+            string userInformationString = "VALUES('" + user.Id + "', '" + user.Password + "', '" + user.Name + "', " + user.Age + ", '" + user.PhoneNumber + "', '" + user.Address + "', " + user.AppliedPoint + ", " +user.Point + ", '" + borrowedBook + "')";
 
-            MySqlCommand command = new MySqlCommand("INSERT INTO user (id, password, name, age, phoneNumber, address, point, borrowedBook)" + userInformationString, connection);
+            MySqlCommand command = new MySqlCommand("INSERT INTO user (id, password, name, age, phoneNumber, address, appliedPoint, point, borrowedBook)" + userInformationString, connection);
 
             command.ExecuteNonQuery();
         }

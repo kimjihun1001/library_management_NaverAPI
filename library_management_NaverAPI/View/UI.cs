@@ -143,8 +143,10 @@ public class UI : DataProcessing
             Console.WriteLine("3. 책 반납");
             Console.WriteLine("4. 책 리스트");
             Console.WriteLine("5. 나의 회원 정보");
-            Console.WriteLine("6. 처음 메뉴로 가기");
-            Console.WriteLine("7. 종료");
+            Console.WriteLine("6. 인기 도서 확인하기");
+            Console.WriteLine("7. 포인트 충전하기");
+            Console.WriteLine("8. 처음 메뉴로 가기");
+            Console.WriteLine("9. 종료");
 
             string input = ReadNumber();
             if (input == "\0")
@@ -168,9 +170,15 @@ public class UI : DataProcessing
                     View_1_5();
                     break;
                 case "6":
-                    View_Main();
+                    View_1_6();
                     break;
                 case "7":
+                    View_1_7();
+                    break;
+                case "8":
+                    View_Main();
+                    break;
+                case "9":
                     Environment.Exit(0);
                     break;
                 default:
@@ -430,6 +438,8 @@ public class UI : DataProcessing
         Console.WriteLine($"{currentUser.Name}님의 회원 정보입니다.");
         Console.WriteLine($"ID: {currentUser.Id}");
         Console.WriteLine($"이름: {currentUser.Name}");
+        Console.WriteLine($"신청중인 포인트: {currentUser.AppliedPoint}");
+        Console.WriteLine($"보유중인 포인트: {currentUser.Point}");
         Console.WriteLine($"나이: {currentUser.Age}");
         Console.WriteLine($"전화 번호: {currentUser.PhoneNumber}");
         Console.WriteLine($"주소: {currentUser.Address}");
@@ -506,6 +516,71 @@ public class UI : DataProcessing
             }
         }
 
+    }
+
+    // 인기 도서 
+    public void View_1_6()
+    {
+        while (true)
+        {
+            View_Title();
+            Console.WriteLine("다른 사람들은 어떤 도서를 많이 대출했는지 확인해보세요.");
+            foreach (Book book in bookList)
+            {
+                Console.WriteLine(book.Name);
+                foreach (Log log in logList)
+                {
+                    if (book.Name == log.BookName)
+                    {
+                        Console.Write("⭐️");
+                    }
+                }
+                Console.WriteLine();
+                Console.WriteLine("--------------------------------------------------");
+            }
+
+            Console.WriteLine("이전 화면으로 돌아가려면 ESC를 눌러주세요.");
+            string input = ReadESC();
+            if (input == "\0")
+                break;
+        }
+    }
+
+    // 포인트 충전하기
+    public void View_1_7()
+    {
+        while (true)
+        {
+            View_Title();
+            Console.WriteLine($"{currentUser.Name}님의 포인트 내역입니다.");
+            Console.WriteLine($"신청중인 포인트: {currentUser.AppliedPoint}");
+            Console.WriteLine($"보유중인 포인트: {currentUser.Point}");
+            Console.WriteLine("포인트를 충전하시려면 아래 계좌로 송금 후, 포인트 충전을 신청해주세요. [1000원 = 1000포인트]");
+            Console.WriteLine("관리자가 승인하면 충전이 완료되고, 승인하지 않으면 입금하신 계좌로 환불됩니다.");
+            Console.WriteLine("예금주명: 도서관장 | 카카오뱅크 12-3456-7890");
+            Console.WriteLine("얼마를 충전하시겠습니까? (1000원 단위로 충전할 수 있습니다.)");
+
+            while (true)
+            {
+                string input1 = ReadNumber();
+                if (input1 == "\0")
+                    break;
+                else if (int.Parse(input1) % 1000 != 0)
+                    Console.WriteLine("다시 입력하세요.");
+                else
+                {
+                    Console.WriteLine(input1 + " 포인트 충전 신청했습니다.");
+                    currentUser.AppliedPoint += int.Parse(input1);
+                    UploadUserDB();
+                }
+
+            }
+            
+            Console.WriteLine("이전 화면으로 돌아가려면 ESC를 눌러주세요.");
+            string input = ReadESC();
+            if (input == "\0")
+                break;
+        }
     }
 
     // 회원가입
@@ -639,7 +714,9 @@ public class UI : DataProcessing
                     Console.WriteLine("6. 책 정보 수정");
                     Console.WriteLine("7. 책 삭제");
                     Console.WriteLine("8. 로그 기록");
-                    Console.WriteLine("9. 돌아가기");
+                    Console.WriteLine("9. 성실 회원 확인하기");
+                    Console.WriteLine("10. 포인트 충전 신청 관리하기");
+                    Console.WriteLine("11. 돌아가기");
 
                     string input = ReadNumber();
                     if (input == "\0")
@@ -673,6 +750,12 @@ public class UI : DataProcessing
                             View_3_8();
                             break;
                         case "9":
+                            View_3_9();
+                            break;
+                        case "10":
+                            View_3_10();
+                            break;
+                        case "11":
                             View_Main();
                             break;
                         default:
@@ -766,52 +849,55 @@ public class UI : DataProcessing
     {
         while (true)
         {
-            View_Title();
-
-            Console.Write("네이버로 구매하고 싶은 책을 검색하세요. 제목으로 검색하려면 1번, 저자로 검색하려면 2번을 눌러주세요.");
-
-            string input = ReadNumber();
-            if (input == "\0")
-                View_AdminMode();
-
-            switch (input)
+            while (true)
             {
-                case "1":
-                    Console.Write("검색 결과를 몇 개씩 보시겠습니까?");
-                    string input1 = ReadNumber();
-                    if (input1 == "\0")
-                        View_AdminMode();
+                View_Title();
 
-                    Console.Write("검색어를 입력하세요.");
-                    string input2 = ReadString();
-                    if (input1 == "\0")
-                        View_AdminMode();
+                Console.Write("네이버로 구매하고 싶은 책을 검색하세요. 제목으로 검색하려면 1번, 저자로 검색하려면 2번을 눌러주세요.");
 
-                    NaverSearchBook("title", input2, input1);
+                string input = ReadNumber();
+                if (input == "\0")
                     break;
-                case "2":
-                    Console.Write("검색 결과를 몇 개씩 보시겠습니까?");
-                    input1 = ReadNumber();
-                    if (input1 == "\0")
-                        View_AdminMode();
 
-                    Console.Write("검색어를 입력하세요.");
-                    input2 = ReadString();
-                    if (input1 == "\0")
-                        View_AdminMode();
+                switch (input)
+                {
+                    case "1":
+                        Console.Write("검색 결과를 몇 개씩 보시겠습니까?");
+                        string input1 = ReadNumber();
+                        if (input1 == "\0")
+                            View_AdminMode();
 
-                    NaverSearchBook("author", input2, input1);
-                    break;
-                default:
-                    break;
+                        Console.Write("검색어를 입력하세요.");
+                        string input2 = ReadString();
+                        if (input1 == "\0")
+                            View_AdminMode();
+
+                        NaverSearchBook("title", input2, input1);
+                        break;
+                    case "2":
+                        Console.Write("검색 결과를 몇 개씩 보시겠습니까?");
+                        input1 = ReadNumber();
+                        if (input1 == "\0")
+                            View_AdminMode();
+
+                        Console.Write("검색어를 입력하세요.");
+                        input2 = ReadString();
+                        if (input1 == "\0")
+                            View_AdminMode();
+
+                        NaverSearchBook("author", input2, input1);
+                        break;
+                    default:
+                        break;
+                }
             }
+
+            Console.WriteLine("이전 화면으로 돌아가려면 ESC를 눌러주세요.");
+            string input3 = ReadESC();
+            if (input3 == "\0")
+                break;
         }
-
-        Console.WriteLine("이전 화면으로 돌아가려면 ESC를 눌러주세요.");
-        string input3 = ReadESC();
-        if (input3 == "\0")
-            View_AdminMode();
-
+        
     }
 
     // 책 정보 수정
@@ -854,6 +940,9 @@ public class UI : DataProcessing
                         case "1":
                             Console.WriteLine("변경할 가격을 입력해주세요. ");
                             string price = ReadNumber();
+                            if (input == "\0")
+                                break;
+
                             currentBook.Price = int.Parse(price);
                             foreach (Book book in bookList)
                             {
@@ -868,11 +957,14 @@ public class UI : DataProcessing
                         case "2":
                             Console.WriteLine("변경할 수량을 입력해주세요. ");
                             string quantityString = ReadNumber();
+                            if (input == "\0")
+                                break;
+
                             int quantity = int.Parse(quantityString);
                             currentBook.Quantity = quantity;
                             foreach (Book book in bookList)
                             {
-                                if (book.Quantity == quantity)
+                                if (book.Id == id)
                                 {
                                     book.Quantity = currentBook.Quantity;
                                     UploadBookDB();
@@ -960,67 +1052,176 @@ public class UI : DataProcessing
             Console.WriteLine("4: 구매");
             Console.WriteLine("5: 삭제");
             Console.WriteLine("이전 화면으로 돌아가려면 ESC를 눌러주세요.");
-            string input = ReadNumber();
-            if (input == "\0")
-                break;
 
-            switch (input)
+            while (true)
             {
-                case "1":
-                    foreach (Log log in logList)
-                    {
-                        View_Title();
-                        string typeOfLog = log.Type;
-                        if (typeOfLog == "로그인")
-                            Console.WriteLine($"{log.Time}: \"{log.UserName}\"님이 로그인했습니다.");
-                    }
-                        break;
-                case "2":
-                    foreach (Log log in logList)
-                    {
-                        View_Title();
-                        string typeOfLog = log.Type;
-                        if (typeOfLog == "대출")
-                            Console.WriteLine($"{log.Time}: \"{log.UserName}\"님이 <{log.BookName}>을 대출했습니다.");
-                    }
+                string input = ReadNumber();
+                if (input == "\0")
                     break;
-                case "3":
-                    foreach (Log log in logList)
-                    {
-                        View_Title();
-                        string typeOfLog = log.Type;
-                        if (typeOfLog == "반납")
-                            Console.WriteLine($"{log.Time}: \"{log.UserName}\"님이 <{log.BookName}>을 반납했습니다.");
-                    }
-                    break;
-                case "4":
-                    foreach (Log log in logList)
-                    {
-                        View_Title();
-                        string typeOfLog = log.Type;
-                        if (typeOfLog == "구매")
-                            Console.WriteLine($"{log.Time}: \"{log.UserName}\"님이 <{log.BookName}>을 구매했습니다.");
-                    }
-                    break;
-                case "5":
-                    foreach (Log log in logList)
-                    {
-                        View_Title();
-                        string typeOfLog = log.Type;
-                        if (typeOfLog == "삭제")
-                            Console.WriteLine($"{log.Time}: \"{log.UserName}\"님이 <{log.BookName}>을 삭제했습니다.");
-                    }
-                    break;
-                default:
-                    Console.WriteLine("잘못 입력했습니다. 다시 입력하세요.");
-                    break;
-            }
 
+                switch (input)
+                {
+                    case "1":
+                        View_Title();
+                        foreach (Log log in logList)
+                        {
+                            string typeOfLog = log.Type;
+                            if (typeOfLog == "로그인")
+                                Console.WriteLine($"{log.Time}: \"{log.UserName}\"님이 로그인했습니다.");
+                        }
+                        break;
+                    case "2":
+                        View_Title();
+                        foreach (Log log in logList)
+                        {
+                            string typeOfLog = log.Type;
+                            if (typeOfLog == "대출")
+                                Console.WriteLine($"{log.Time}: \"{log.UserName}\"님이 <{log.BookName}>을 대출했습니다.");
+                        }
+                        break;
+                    case "3":
+                        View_Title();
+                        foreach (Log log in logList)
+                        {
+                            string typeOfLog = log.Type;
+                            if (typeOfLog == "반납")
+                                Console.WriteLine($"{log.Time}: \"{log.UserName}\"님이 <{log.BookName}>을 반납했습니다.");
+                        }
+                        break;
+                    case "4":
+                        foreach (Log log in logList)
+                        {
+                            View_Title();
+                            string typeOfLog = log.Type;
+                            if (typeOfLog == "구매")
+                                Console.WriteLine($"{log.Time}: \"{log.UserName}\"님이 <{log.BookName}>을 구매했습니다.");
+                        }
+                        break;
+                    case "5":
+                        View_Title();
+                        foreach (Log log in logList)
+                        {
+                            string typeOfLog = log.Type;
+                            if (typeOfLog == "삭제")
+                                Console.WriteLine($"{log.Time}: \"{log.UserName}\"님이 <{log.BookName}>을 삭제했습니다.");
+                        }
+                        break;
+                    default:
+                        Console.WriteLine("잘못 입력했습니다. 다시 입력하세요.");
+                        break;
+                }
+            }
+            
             Console.WriteLine("이전 화면으로 돌아가려면 ESC를 눌러주세요.");
             string input1 = ReadESC();
             if (input1 == "\0")
                 break;
 
+        }
+    }
+
+    public void View_3_9()
+    {
+        while (true)
+        {
+            View_Title();
+            Console.WriteLine("어떤 회원이 활동을 많이 했는지 확인해보세요.");
+            foreach (User user in userList)
+            {
+                Console.WriteLine("회원명: " + user.Name);
+                string login = "";
+                string borrowBook = "";
+                string returnBook = "";
+
+                foreach (Log log in logList)
+                {
+                    if (user.Name == log.UserName)
+                    {
+                        switch (log.Type)
+                        {
+                            case "로그인":
+                                login = login + "⭐️";
+                                break;
+                            case "대출":
+                                borrowBook = borrowBook + "⭐️";
+                                break;
+                            case "반납":
+                                returnBook = returnBook + "⭐️";
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                }
+                Console.WriteLine("로그인: " + login);
+                Console.WriteLine("대출: " + borrowBook);
+                Console.WriteLine("반납: " + returnBook);
+                Console.WriteLine();
+                Console.WriteLine("--------------------------------------------------");
+            }
+
+            Console.WriteLine("이전 화면으로 돌아가려면 ESC를 눌러주세요.");
+            string input = ReadESC();
+            if (input == "\0")
+                break;
+        }
+    }
+
+    // 포인트 충전 관리 
+    public void View_3_10()
+    {
+        while (true)
+        {
+            View_Title();
+            Console.WriteLine("회원들의 포인트 충전 신청 내역입니다.");
+            foreach (User user in userList)
+            {
+                Console.WriteLine("회원명: " + user.Name);
+                Console.WriteLine("신청한 포인트: " + user.AppliedPoint);
+            }
+            Console.WriteLine("계좌의 입금 내역을 확인하신 후, 포인트 충전 신청을 승인 / 거절하려면 해당 회원명을 입력하세요.");
+            while (true)
+            {
+                string input = ReadKorean();
+                if (input == "\0")
+                    break;
+
+                foreach (User user in userList)
+                {
+                    if (input == user.Name)
+                    {
+                        Console.WriteLine($"{user.Name}님의 포인트 충전 신청을 승인하려면 1, 거절하려면 2번을 눌러주세요.");
+                        string input1 = ReadNumber();
+                        if (input1 == "\0")
+                            break;
+                        else if (input1 == "1")
+                        {
+                            Console.WriteLine($"{user.Name}님의 포인트 충전 신청이 승인되었습니다.");
+                            user.Point += user.AppliedPoint;
+                            user.AppliedPoint = 0;
+                            UploadUserDB();
+                            break;
+                        }
+                        else if (input1 == "2")
+                        {
+                            Console.WriteLine($"{user.Name}님의 포인트 충전 신청이 거절되었습니다.");
+                            user.AppliedPoint = 0;
+                            UploadUserDB();
+                            break;
+                        }
+                        else
+                        {
+                            Console.WriteLine("잘못 입력하셨습니다.");
+                            break;
+                        }
+                    }
+                }
+            }
+            
+            Console.WriteLine("이전 화면으로 돌아가려면 ESC를 눌러주세요.");
+            string input2 = ReadESC();
+            if (input2 == "\0")
+                break;
         }
     }
 

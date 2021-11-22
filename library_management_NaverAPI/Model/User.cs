@@ -9,7 +9,8 @@ public class User : DataProcessing
     private int age;   // 나이
     private string phoneNumber;  // 전화번호
     private string adress;   // 주소
-    private int point;
+    private int appliedPoint;   // 신청한 포인트
+    private int point;  // 관리자 승인이 완료된 포인트
     public List<Book> borrowedBook = new List<Book>();    // 대출한 책
     //private int number;     // 검색 리스트용 넘버
 
@@ -54,6 +55,11 @@ public class User : DataProcessing
         get; set;
     }
 
+    public int AppliedPoint
+    {
+        get; set;
+    }
+
     public int Point
     {
         get; set;
@@ -61,9 +67,7 @@ public class User : DataProcessing
 
     public User()
     {
-        // 생성자
-        Book book = new Book();
-        borrowedBook.Add(book);
+        
     }
 
     public User(string id, string password, string name, int age, string phoneNumber, string address)

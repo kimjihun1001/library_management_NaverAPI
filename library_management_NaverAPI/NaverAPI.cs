@@ -79,19 +79,19 @@ public class NaverAPI : TreatDB_MySQL
             {
                 foreach (XmlNode xmlNode in xmlNodeList)
                 {
-                    string name = xmlNode.SelectSingleNode("title").InnerText;
-                    string author = xmlNode.SelectSingleNode("author").InnerText;
-                    string price = xmlNode.SelectSingleNode("price").InnerText;
-                    string discount = xmlNode.SelectSingleNode("discount").InnerText;
-                    string publisher = xmlNode.SelectSingleNode("publisher").InnerText;
-                    string isbn = xmlNode.SelectSingleNode("isbn").InnerText;
+                    string name = CutTag(xmlNode.SelectSingleNode("title").InnerText);
+                    string author = CutTag(xmlNode.SelectSingleNode("author").InnerText);
+                    string price = CutTag(xmlNode.SelectSingleNode("price").InnerText);
+                    string discount = CutTag(xmlNode.SelectSingleNode("discount").InnerText);
+                    string publisher = CutTag(xmlNode.SelectSingleNode("publisher").InnerText);
+                    string isbn = CutTag(xmlNode.SelectSingleNode("isbn").InnerText);
 
-                    Console.WriteLine("제목: " + CutTag(name));
-                    Console.WriteLine("저자: " + CutTag(author));
-                    Console.WriteLine("가격: " + CutTag(price));
-                    Console.WriteLine("할인 가격: " + CutTag(discount));
-                    Console.WriteLine("출판사: " + CutTag(publisher));
-                    Console.WriteLine("ISBN: " + CutTag(isbn));
+                    Console.WriteLine("제목: " + name);
+                    Console.WriteLine("저자: " + author);
+                    Console.WriteLine("가격: " + price);
+                    Console.WriteLine("할인 가격: " + discount);
+                    Console.WriteLine("출판사: " + publisher);
+                    Console.WriteLine("ISBN: " + isbn);
                     Console.WriteLine("--------------------------------------------------");
 
                 }
@@ -108,25 +108,27 @@ public class NaverAPI : TreatDB_MySQL
             else if (key.Key == ConsoleKey.Enter)
             {
                 Console.WriteLine("구매할 책의 ISBN 뒷 13자리를 입력하세요");
-                string input = ReadNumber();
-                if (input == "\0")
-                    break;
-
+                
                 while (true)
                 {
+                    string input = ReadNumber();
+                    if (input == "\0")
+                        break;
+
                     bool IsThereResult = false;
                     bool IsThereAlready = false;
 
                     foreach (XmlNode xmlNode in xmlNodeList)
                     {
-                        string name = xmlNode.SelectSingleNode("title").InnerText;
-                        string author = xmlNode.SelectSingleNode("author").InnerText;
-                        string price = xmlNode.SelectSingleNode("price").InnerText;
-                        string discount = xmlNode.SelectSingleNode("discount").InnerText;
-                        string publisher = xmlNode.SelectSingleNode("publisher").InnerText;
-                        string isbn = xmlNode.SelectSingleNode("isbn").InnerText;
+                        string name = CutTag(xmlNode.SelectSingleNode("title").InnerText);
+                        string author = CutTag(xmlNode.SelectSingleNode("author").InnerText);
+                        string price = CutTag(xmlNode.SelectSingleNode("price").InnerText);
+                        string discount = CutTag(xmlNode.SelectSingleNode("discount").InnerText);
+                        string publisher = CutTag(xmlNode.SelectSingleNode("publisher").InnerText);
+                        string isbn = CutTag(xmlNode.SelectSingleNode("isbn").InnerText);
 
-                        if (input == isbn.Substring(isbn.Length - 14, isbn.Length - 1))
+                        string[] isbnShort = isbn.Split(" ");
+                        if (input == isbnShort[1])
                         {
                             foreach (Book book in bookList)
                             {
@@ -145,21 +147,31 @@ public class NaverAPI : TreatDB_MySQL
                                 if (input1 == "\0")
                                     break;
 
-                                int id = int.Parse(bookList[bookList.Count - 1].Id) + 1;
+                                int idNumber = int.Parse(bookList[bookList.Count - 1].Id) + 1;
+                                string id = idNumber.ToString();
+                                if (id.Length == 1)
+                                {
+                                    id = "00" + id;
+                                }
+                                else if (id.Length == 2)
+                                {
+                                    id = "0" + id;
+                                }
 
+                                // 왠지 모르지만 null로 하면 안되길래 ""로 함.
                                 if (discount != "")
                                 {
                                     price = discount;
                                 }
 
-                                // 왠지 모르지만 null로 하면 안되길래 ""로 함.
-                                Book book1 = new Book(id.ToString(), input, name, publisher, author, int.Parse(price), int.Parse(input1), int.Parse(input1));
+                                Book book1 = new Book(id, input, name, publisher, author, int.Parse(price), int.Parse(input1), int.Parse(input1));
                                 DataProcessing dataProcessing = new DataProcessing();
                                 dataProcessing.HistoryOfAdd(book1);
                                 bookList.Add(book1);
                                 UploadBookDB();
                                 Console.WriteLine("신규 책 등록이 완료되었습니다.");
                                 IsThereResult = true;
+                                while (Console.ReadKey().Key != ConsoleKey.Enter) { };
                             }
 
                             break;

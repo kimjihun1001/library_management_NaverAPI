@@ -865,30 +865,56 @@ public class UI : DataProcessing
                 switch (input)
                 {
                     case "1":
-                        Console.Write("검색 결과를 몇 개씩 보시겠습니까?");
-                        string input1 = ReadNumber();
-                        if (input1 == "\0")
-                            View_AdminMode();
+                        while (true)
+                        {
+                            Console.Write("검색 결과를 몇 개씩 보시겠습니까?");
+                            string input1 = ReadNumber();
+                            if (input1 == "\0")
+                            {
+                                View_AdminMode();
+                                break;
+                            }
+                            else if (int.Parse(input1) == 0)
+                            {
+                                Console.WriteLine("다시 입력하세요.");
+                            }
+                            else
+                            {
+                                Console.Write("검색어를 입력하세요.");
+                                string input2 = ReadString();
+                                if (input1 == "\0")
+                                    View_AdminMode();
 
-                        Console.Write("검색어를 입력하세요.");
-                        string input2 = ReadString();
-                        if (input1 == "\0")
-                            View_AdminMode();
-
-                        NaverSearchBook("title", input2, input1);
+                                NaverSearchBook("title", input2, input1);
+                                break;
+                            }
+                        }
                         break;
                     case "2":
-                        Console.Write("검색 결과를 몇 개씩 보시겠습니까?");
-                        input1 = ReadNumber();
-                        if (input1 == "\0")
-                            View_AdminMode();
+                        while (true)
+                        {
+                            Console.Write("검색 결과를 몇 개씩 보시겠습니까?");
+                            string input1 = ReadNumber();
+                            if (input1 == "\0")
+                            {
+                                View_AdminMode();
+                                break;
+                            }
+                            else if (int.Parse(input1) == 0)
+                            {
+                                Console.WriteLine("다시 입력하세요.");
+                            }
+                            else
+                            {
+                                Console.Write("검색어를 입력하세요.");
+                                string input2 = ReadString();
+                                if (input1 == "\0")
+                                    View_AdminMode();
 
-                        Console.Write("검색어를 입력하세요.");
-                        input2 = ReadString();
-                        if (input1 == "\0")
-                            View_AdminMode();
-
-                        NaverSearchBook("author", input2, input1);
+                                NaverSearchBook("author", input2, input1);
+                                break;
+                            }
+                        }
                         break;
                     default:
                         break;

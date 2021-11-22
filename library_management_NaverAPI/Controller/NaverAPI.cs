@@ -22,19 +22,24 @@ public class NaverAPI : TreatDB_MySQL
         const string NAVER_DISPLAY_STRING = "&display=";
 
         string url;
-        int page = 1;
-        
+        int startNumber = 1;    // 화면에 표시 시작할 부분 
+        int page = 1;   // 현재 페이지 
+        int totalPage = 1;  // 전체 페이지 
+
         while (true)
         {
+            // 타이틀 출력 
             UI ui2 = new UI();
             ui2.View_Title();
+
+            // 제목 혹은 저자로 검색 
             if (searchField == "title")
             {
-                url = NAVER_URL + NAVER_SearchForTitle + searchWord + NAVER_DISPLAY_STRING + displayNumber + "&start=" + page.ToString();
+                url = NAVER_URL + NAVER_SearchForTitle + searchWord + NAVER_DISPLAY_STRING + displayNumber + "&start=" + startNumber.ToString();
             }
             else if (searchField == "author")
             {
-                url = NAVER_URL + NAVER_SearchForAuthor + searchWord + NAVER_DISPLAY_STRING + displayNumber + "&start=" + page.ToString();
+                url = NAVER_URL + NAVER_SearchForAuthor + searchWord + NAVER_DISPLAY_STRING + displayNumber + "&start=" + startNumber.ToString();
             }
             else
             {
@@ -68,6 +73,7 @@ public class NaverAPI : TreatDB_MySQL
 
             if (SearchResultCountNode.InnerText == "0")
             {
+                Console.WriteLine($"총 검색 결과: {SearchResultCountNode.InnerText}건");
                 Console.WriteLine("검색 결과가 없습니다.");
                 break;
             }
@@ -77,6 +83,22 @@ public class NaverAPI : TreatDB_MySQL
             }
             else
             {
+                int quotient = int.Parse(SearchResultCountNode.InnerText) / int.Parse(displayNumber);
+                int remainder = int.Parse(SearchResultCountNode.InnerText) % int.Parse(displayNumber);
+
+                if (remainder != 0)
+                {
+                    totalPage = quotient + 1;
+                }
+                else
+                {
+                    totalPage = quotient;
+                }
+                
+                Console.WriteLine($"총 검색 결과: {SearchResultCountNode.InnerText}권 ");
+                Console.WriteLine($"현재 페이지: {page} / {totalPage}");
+                Console.WriteLine();
+
                 foreach (XmlNode xmlNode in xmlNodeList)
                 {
                     string name = CutTag(xmlNode.SelectSingleNode("title").InnerText);
@@ -188,14 +210,27 @@ public class NaverAPI : TreatDB_MySQL
             }
             else if (key.Key == ConsoleKey.RightArrow)
             {
-                // display하기로 한 숫자보다 현재 display된 항목이 적을 경우, 마지막 페이지기 때문에 뒤로 넘어가지 않음
-                if (int.Parse(SearchResultDisplayCountNode.InnerText) == int.Parse(displayNumber))
-                    page += int.Parse(displayNumber);
+                // 그냥 page랑 totalPage 만들어서 사용 
+                if (page < totalPage)
+                {
+                    page++;
+                    startNumber += int.Parse(displayNumber);
+                }
+                
+                //// display하기로 한 숫자보다 현재 display된 항목이 적을 경우, 마지막 페이지기 때문에 뒤로 넘어가지 않음
+                //if (int.Parse(SearchResultDisplayCountNode.InnerText) == int.Parse(displayNumber))
+                //    startNumber += int.Parse(displayNumber);
             }
             else if (key.Key == ConsoleKey.LeftArrow)
             {
                 if (page != 1)
-                    page -= int.Parse(displayNumber);
+                {
+                    page--;
+                    startNumber -= int.Parse(displayNumber);
+                }
+
+                //if (startNumber != 1)
+                //    startNumber -= int.Parse(displayNumber);
             }
         }
 

@@ -200,10 +200,11 @@ public class NaverAPI : TreatDB_MySQL
         }
 
 
-        // 가져온 text 내부의 태그 제거 함수
+        // 가져온 text 내부의 HTML 태그 제거 함수
+        // 저자명의 |는 안 지워짐
         string CutTag(string input)
         {
-            return Regex.Replace(input, @"<(.\n)*?>", string.Empty);
+            return Regex.Replace(input, @"<(.|\n)*?>", string.Empty);
         }
 
     }

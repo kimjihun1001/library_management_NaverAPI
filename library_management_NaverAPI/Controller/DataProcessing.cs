@@ -123,18 +123,24 @@ public class DataProcessing : NaverAPI
         {
             if (book.Id == input)
             {
-                if (book.Quantity == 0)
+                if (book.CurrentQuantity == 0)
                 {
                     Console.Write("대출 가능한 책이 없습니다. 다시 입력해주세요: ");
+                    return false;
+                }
+                else if ((currentUser.Point - 1000) < 0)
+                {
+                    Console.Write("포인트 충전이 필요합니다.");
                     return false;
                 }
                 else
                 {
                     currentUser.borrowedBook.Add(book);
-                    book.Quantity--;
+                    book.CurrentQuantity--;
+                    currentUser.Point -= 1000;
                     HistoryOfBorrow(book);
                     UploadBookDB();
-                    Console.WriteLine($"<{book.Name}> 대출 완료했습니다.");
+                    Console.WriteLine($"<{book.Name}> 대출 완료했습니다. 1000 포인트 사용했습니다.");
                     return true;
                 }
             }
@@ -154,13 +160,14 @@ public class DataProcessing : NaverAPI
                 {
                     if (book1.Id == book.Id)
                     {
-                        book1.Quantity++;
+                        book1.CurrentQuantity++;
                         break;
                     }
                 }
+                currentUser.Point += 500;
                 HistoryOfReturn(book);
                 UploadBookDB();
-                Console.WriteLine($"<{book.Name}> 반납 완료했습니다.");
+                Console.WriteLine($"<{book.Name}> 반납 완료했습니다. 500 포인트 받았습니다.");
                 return true;
             }
         }

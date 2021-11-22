@@ -32,7 +32,8 @@ public class UI : DataProcessing
         {
             Console.WriteLine($"ID: {user.Id}");
             Console.WriteLine($"이름: {user.Name}");
-            Console.WriteLine($"포인트: {user.Point}");
+            Console.WriteLine($"신청중인 포인트: {user.AppliedPoint}");
+            Console.WriteLine($"보유중인 포인트: {user.Point}");
             Console.WriteLine($"나이: {user.Age}");
             Console.WriteLine($"전화 번호: {user.PhoneNumber}");
             Console.WriteLine($"주소: {user.Address}");
@@ -361,7 +362,7 @@ public class UI : DataProcessing
                     if (check)
                         break;
                     else
-                        Console.WriteLine("잘못 입력했습니다. 다시 입력하세요: ");
+                        Console.WriteLine("다시 입력하세요: ");
                 }
                 Console.WriteLine("이전 화면으로 돌아가려면 ESC를 눌러주세요.");
                 input = ReadESC();
@@ -1063,6 +1064,7 @@ public class UI : DataProcessing
                 {
                     case "1":
                         View_Title();
+                        Console.WriteLine("1: 로그인");
                         foreach (Log log in logList)
                         {
                             string typeOfLog = log.Type;
@@ -1072,6 +1074,7 @@ public class UI : DataProcessing
                         break;
                     case "2":
                         View_Title();
+                        Console.WriteLine("2: 대출");
                         foreach (Log log in logList)
                         {
                             string typeOfLog = log.Type;
@@ -1081,6 +1084,7 @@ public class UI : DataProcessing
                         break;
                     case "3":
                         View_Title();
+                        Console.WriteLine("3: 반납");
                         foreach (Log log in logList)
                         {
                             string typeOfLog = log.Type;
@@ -1089,9 +1093,10 @@ public class UI : DataProcessing
                         }
                         break;
                     case "4":
+                        View_Title();
+                        Console.WriteLine("4: 구매");
                         foreach (Log log in logList)
                         {
-                            View_Title();
                             string typeOfLog = log.Type;
                             if (typeOfLog == "구매")
                                 Console.WriteLine($"{log.Time}: \"{log.UserName}\"님이 <{log.BookName}>을 구매했습니다.");
@@ -1099,6 +1104,7 @@ public class UI : DataProcessing
                         break;
                     case "5":
                         View_Title();
+                        Console.WriteLine("5: 삭제");
                         foreach (Log log in logList)
                         {
                             string typeOfLog = log.Type;
@@ -1178,6 +1184,7 @@ public class UI : DataProcessing
             {
                 Console.WriteLine("회원명: " + user.Name);
                 Console.WriteLine("신청한 포인트: " + user.AppliedPoint);
+                Console.WriteLine("--------------------------------------------------");
             }
             Console.WriteLine("계좌의 입금 내역을 확인하신 후, 포인트 충전 신청을 승인 / 거절하려면 해당 회원명을 입력하세요.");
             while (true)

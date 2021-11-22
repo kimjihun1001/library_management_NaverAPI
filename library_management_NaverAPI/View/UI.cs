@@ -247,7 +247,8 @@ public class UI : DataProcessing
             SearchBookForName(input);
             if (searchedBookList.Count == 0)
             {
-                Console.WriteLine("검색 결과가 없습니다. 다시 입력하세요. ");
+                Console.WriteLine("검색 결과가 없습니다. Enter를 눌러 검색화면으로 돌아가세요. ");
+                while (Console.ReadKey().Key != ConsoleKey.Enter) { };
             }
             else
             {
@@ -345,7 +346,8 @@ public class UI : DataProcessing
             SearchBookForName(input);
             if (searchedBookList.Count == 0)
             {
-                Console.WriteLine("검색 결과가 없습니다. 다시 입력하세요. ");
+                Console.WriteLine("검색 결과가 없습니다. Enter를 눌러 검색화면으로 돌아가세요. ");
+                while (Console.ReadKey().Key != ConsoleKey.Enter) { };
             }
             else
             {

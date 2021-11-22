@@ -206,6 +206,49 @@ public class NaverAPI : TreatDB_MySQL
         {
             return Regex.Replace(input, @"<(.|\n)*?>", string.Empty);
         }
-
     }
+
+    public bool NaverSearchAdult(string searchWord)
+    {
+        const string NAVER_ID = "xQKhYDcaW4DZ5JNHdmXJ";
+        const string NAVER_SECRET = "869iq_F6ep";
+        const string NAVER_URL = "https://openapi.naver.com/v1/search/adult.xml";
+        const string NAVER_SearchFor = "?query=";
+        string url = NAVER_URL + NAVER_SearchFor + searchWord;
+
+        // 요청
+        HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+
+        // API 접근
+        request.Headers.Add("X-Naver-Client-Id", NAVER_ID);
+        request.Headers.Add("X-Naver-Client-Secret", NAVER_SECRET);
+
+        // 응답 받기
+        HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+
+        // Xml 파일 받아오기
+        Stream stream = response.GetResponseStream();
+        XmlDocument xmlDocument = new XmlDocument();
+        xmlDocument.Load(stream);
+        //Console.WriteLine(xmlDocument.InnerXml);
+
+        // Xml 파일 분해하기
+        XmlNode firstNode = xmlDocument.SelectSingleNode("result");
+        XmlNode secondNode = firstNode.SelectSingleNode("item");
+        XmlNode adultNode = secondNode.SelectSingleNode("adult");
+
+        if (adultNode.InnerText == "1")
+        {
+            return true;
+        }
+        else if (adultNode.InnerText == "0")
+        {
+            return false;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
 }

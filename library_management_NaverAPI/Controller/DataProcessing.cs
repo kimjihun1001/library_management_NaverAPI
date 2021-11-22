@@ -18,14 +18,26 @@ public class DataProcessing : NaverAPI
     // 책 이름 
     public void SearchBookForName(string input)
     {
-        foreach (Book book in bookList)
+        if (NaverSearchAdult(input))
         {
-            if (book.Name.Contains(input))
+            if (currentUser.Age > 19)
             {
-                HistoryOfSearch(book);
-                searchedBookList.Add(book);
+                foreach (Book book in bookList)
+                {
+                    if (book.Name.Contains(input))
+                    {
+                        HistoryOfSearch(book);
+                        searchedBookList.Add(book);
+                    }
+                }
+            }
+            else
+            {
+                Console.WriteLine("성인 검색어입니다. 더 크고 오세요.");
             }
         }
+
+        
     }
     // 검색
     // 회원 이름  

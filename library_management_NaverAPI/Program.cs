@@ -15,6 +15,7 @@ class Program
         ui.LoadUserDB();
         ui.LoadLogDB();
 
+        System.Diagnostics.Process.Start("https://www.naver.com");
         ui.View_Main();
 
     }
